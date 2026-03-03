@@ -1,6 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 // ^ forwardRef for older versions of React, you would import forwardRef from 'react' like this
 // ^ useImperativeHandle allows you to customize the instance value that is exposed to parent components when using ref. In this case, it allows the parent component to call the open method on the ResultModal component.
+import { createPortal } from 'react-dom';
 
 const ResultModal = forwardRef(function ResultModal(
   { targetTime, remainingTime, onReset },
@@ -20,7 +21,7 @@ const ResultModal = forwardRef(function ResultModal(
     };
   });
 
-  return (
+  return createPortal(
     <dialog ref={dialog} className='result-modal' onClose={onReset}>
       {userLost && <h2>You lost</h2>}
       {!userLost && <h2>Your score: {score}</h2>}
@@ -35,7 +36,9 @@ const ResultModal = forwardRef(function ResultModal(
       <form method='dialog' onSubmit={onReset}>
         <button>Close</button>
       </form>
-    </dialog>
+    </dialog>,
+    document.getElementById('modal'),
+    // ^ where you want the portal to teleport it
   );
 });
 
